@@ -1,21 +1,52 @@
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Mobile Navigation Toggle
     const mobileMenu = document.getElementById('mobile-menu');
-    const navLinks = document.querySelector('.nav-links');
+    const navLinks = document.getElementById('primary-navigation');
 
-    mobileMenu.addEventListener('click', () => {
-        navLinks.classList.toggle('show');
-        mobileMenu.classList.toggle('is-active'); // For animating the hamburger icon
-    });
+    // Toggle mobile menu and keep aria state in sync
+    function toggleMenu(open) {
+        const isOpen = typeof open === 'boolean' ? open : !navLinks.classList.contains('show');
+        if (isOpen) {
+            navLinks.classList.add('show');
+            navLinks.classList.add('active');
+            mobileMenu.classList.add('is-active');
+            mobileMenu.setAttribute('aria-expanded', 'true');
+        } else {
+            navLinks.classList.remove('show');
+            navLinks.classList.remove('active');
+            mobileMenu.classList.remove('is-active');
+            mobileMenu.setAttribute('aria-expanded', 'false');
+        }
+    }
+
+    mobileMenu.addEventListener('click', () => toggleMenu());
 
     // Close mobile menu when a navigation link is clicked
     navLinks.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', () => {
             if (navLinks.classList.contains('show')) {
-                navLinks.classList.remove('show');
-                mobileMenu.classList.remove('is-active');
+                toggleMenu(false);
             }
         });
+    });
+
+    // Close on Escape key for accessibility
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && navLinks.classList.contains('show')) {
+            toggleMenu(false);
+            mobileMenu.focus();
+        }
+    });
+
+    // Debounced resize handler: close mobile menu when viewport becomes wide
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            if (window.innerWidth > 800 && navLinks.classList.contains('show')) {
+                toggleMenu(false);
+            }
+        }, 150);
     });
 
     // 2. Smooth Scrolling for navigation links
@@ -75,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
             liveLink: 'https://your-blog-platform.com',
             githubLink: 'https://github.com/yourusername/django-blog'
         },
-        {
+        { 
             id: 6,
             title: 'Recipe Finder',
             description: 'An application that allows users to search for recipes using keywords and dietary filters, leveraging an external recipe API.',

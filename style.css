@@ -215,6 +215,12 @@ nav {
     box-shadow: 0 0 20px rgba(0,123,255,0.5);
 }
 
+/* Make images fluid and avoid overflow on small screens */
+img, .profile-pic, .project-card img {
+    max-width: 100%;
+    height: auto;
+}
+
 .hero-content h1 {
     font-size: 3.8em;
     margin-bottom: 15px;
@@ -300,7 +306,7 @@ section {
 }
 
 .skill-category {
-    background: var(--dark-bg); /* Use dark bg for consistency, or slightly lighter */
+    background: rgba(255,255,255,0.04); /* subtle card background on dark section */
     border: 1px solid rgba(255,255,255,0.1);
     padding: 30px;
     border-radius: var(--border-radius);
@@ -514,7 +520,9 @@ footer p {
         border-radius: var(--border-radius);
     }
 
-    .nav-links.active {
+    /* support both 'active' class and 'show' class used by JS */
+    .nav-links.active,
+    .nav-links.show {
         display: flex;
     }
 
@@ -552,6 +560,12 @@ footer p {
 
     .skills-grid, .project-grid {
         grid-template-columns: 1fr; /* Stack items on small screens */
+    }
+
+    /* Reduce hero padding on small screens to avoid overflow */
+    .hero-section {
+        padding: 60px 12px;
+        min-height: auto;
     }
 
     .footer-content {
